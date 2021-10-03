@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 
 public class InputManager : MonoBehaviour {
     [SerializeField]
-    TileMapManager mapManager;
-
+    GameManager gameManager;
+    
     Vector2 mousePos => Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
     private void Update() {
@@ -16,7 +16,7 @@ public class InputManager : MonoBehaviour {
 
     void ReadMouseInput(int i) {
         if (Input.GetMouseButtonDown(i) && !IsMouseOverUIWithIgnores()) {
-            mapManager.OnClick(i, mousePos);
+            gameManager.OnClick(i, mousePos);
         }
     }
 

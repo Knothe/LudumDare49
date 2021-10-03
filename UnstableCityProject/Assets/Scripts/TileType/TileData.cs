@@ -26,4 +26,13 @@ public class TileData : ScriptableObject
 
     virtual public float ContaminationByExisting() => 0;
     virtual public float ContaminationByDead() => 0;
+
+    public TileBase GetRandomTile() {
+        if (tiles.Length == 0)
+            return null;
+        //else if (tiles.Length == 1)
+        //    return tiles[0];
+        int index = Random.Range(0, tiles.Length - 1);
+        return tiles[index];
+    }
 }

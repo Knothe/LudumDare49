@@ -10,6 +10,9 @@ public class UIStateManager : MonoBehaviour
     [SerializeField] CanvasGroup inGame;
     [SerializeField] CanvasGroup ending;
     [SerializeField] CanvasGroup credits;
+    [SerializeField] CanvasGroup presentation;
+
+    [SerializeField] GameManager gameManager;
 
     Transition transition;
 
@@ -43,6 +46,7 @@ public class UIStateManager : MonoBehaviour
     void EndTransition() {
         transition.EndTransition();
         currentCanvas = nextCanvas;
+        gameManager.FinishedTransition(currentCanvas);
     }
 
     public void StartUITransition(UITransitionData data) {
@@ -59,6 +63,8 @@ public class UIStateManager : MonoBehaviour
                 return inGame;
             case CanvasID.ENDING:
                 return ending;
+            case CanvasID.PRESENTATION:
+                return presentation;
         }
         return credits; // Need one at the end
     }
@@ -118,4 +124,4 @@ public class UIStateManager : MonoBehaviour
     }
 
 }
-public enum CanvasID { START, INGAME, ENDING, CREDITS };
+public enum CanvasID { START, PRESENTATION, INGAME, ENDING, CREDITS};
