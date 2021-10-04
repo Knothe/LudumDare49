@@ -9,7 +9,7 @@ public class TileData : ScriptableObject
     public TileBase[] tiles;
     public int id;
     public int hp;
-    public float contamination;
+    public int contamination;
 
     [Header("Possible actions")]
     [SerializeField] protected bool recolect;
@@ -24,8 +24,8 @@ public class TileData : ScriptableObject
             recolect, build, destroy, repair);
     }
 
-    virtual public float ContaminationByExisting() => 0;
-    virtual public float ContaminationByDead() => 0;
+    virtual public int ContaminationByExisting() => 0;
+    virtual public int ContaminationByDead() => 0;
 
     public TileBase GetRandomTile() {
         if (tiles.Length == 0)

@@ -5,8 +5,8 @@ using UnityEngine;
 public class LogicTile
 {
     public int id { get; private set; }
-    public float contaminationByExisting { get; private set; }
-    public float contaminationByDead { get; private set; }
+    public int contaminationByExisting { get; private set; }
+    public int contaminationByDead { get; private set; }
     public int actionValue { get; private set; }
     float health, maxHealth;
     public float healthPercentage => health / maxHealth;

@@ -169,9 +169,6 @@ public class TributeMenuData {
     GameObject tributeMenu;
 
     [SerializeField]
-    float extraModifier = .5f, lessModifier = .5f;
-
-    [SerializeField]
     Text stabilityText;
 
     [SerializeField]
@@ -218,17 +215,14 @@ public class TributeMenuData {
     }
 
     void PredictStability() {
-        float stabilityMod = 0;
-        stabilityMod += StabilityMod(giveWood - needWood, lessModifier, extraModifier);
-        stabilityMod += StabilityMod(giveWater - needWater, lessModifier, extraModifier);
-        stabilityMod += StabilityMod(giveOre - needOre, lessModifier, extraModifier);
-        futureStability = current + (int)stabilityMod;
+        int mod = StabilityMod(needWood, giveWood) +
+            StabilityMod(needWater, giveWater) + StabilityMod(needOre, giveOre);
+        futureStability = current + mod;
         stabilityText.text = futureStability.ToString();
     }
 
-    float StabilityMod(int dif, float lessMod, float extraMod) =>
-        (dif == 0) ? 0 : (dif < 0) ? dif * lessMod : dif * extraMod;
-
+    int StabilityMod(int asked, int given) =>
+        (given - asked) * 2;
 
     void ModifyWood(int mod) {
         giveWood += mod;

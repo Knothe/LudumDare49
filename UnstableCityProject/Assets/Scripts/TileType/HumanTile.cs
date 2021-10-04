@@ -4,5 +4,5 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "TileData/HumanMade")]
 public class HumanTile : TileData {
-    public override float ContaminationByExisting() => contamination;
+    public override int ContaminationByExisting() => contamination;
 }

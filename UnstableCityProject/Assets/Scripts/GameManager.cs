@@ -16,9 +16,6 @@ public class GameManager : MonoBehaviour
     UIEndingController endingUI;
 
     [SerializeField]
-    PlayerManager playerManager;
-
-    [SerializeField]
     TileMapManager tileMap;
 
     [SerializeField]
@@ -27,17 +24,13 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     ConstructionCost homeCost, factoryCost, foodCost, repairCost;
 
-    [SerializeField]
-    float contDamageToStability;
-    
     int actionCount, currentTurn;
     bool actionMenu = false;
     int turnsToCatastrophe = -1;
 
     int wood, water, ore;
-    float constantContamination;
-    float totalContamination;
-
+    int constantContamination;
+    int contamination { get; set; }
     int stability = 100;
 
     // Estabilidad -> float
@@ -66,7 +59,7 @@ public class GameManager : MonoBehaviour
         currentTurn = 1;
         wood = water = ore = 0;
         constantContamination = 0;
-        totalContamination = 0;
+        contamination = 0;
         tileMap.StartGrid();
         uiGameManager.Initialize();
         stability = 100;
@@ -109,7 +102,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void Collect() {
-        int matCollected = tileMap.CollectFromSelected(out float contamination);
+        int matCollected = tileMap.CollectFromSelected(out int contamination);
         constantContamination += contamination;
         if (matCollected == 0)
             wood++;
@@ -171,13 +164,8 @@ public class GameManager : MonoBehaviour
         UpdateAllUI();
     }
 
-    int CalculateCatastropheToStability() {
-        return 10;
-    }
-
-    int CalculateCatastropheToStructures() {
-        return 2;
-    }
+    int CalculateCatastropheToStructures() => (int)Mathf.Floor(currentTurn / 10f) + 1;
+    
 
     void UpdateAllUI() =>
         uiGameManager.UpdateAll(currentTurn, actionCount, actionsPerTurn, wood, water, ore, stability);
@@ -195,8 +183,7 @@ public class GameManager : MonoBehaviour
     void EndTurn() {
         actionCount = 1;
         currentTurn++;
-        totalContamination += (constantContamination + tileMap.CountContamination());
-        stability -= (int)(contDamageToStability * totalContamination);
+        contamination = constantContamination + tileMap.CountContamination();
         if (currentTurn > totalTurns) {
             EndGame();
             return;
@@ -209,7 +196,7 @@ public class GameManager : MonoBehaviour
         turnsToCatastrophe--;
         if (turnsToCatastrophe == 0) {
             int catastrophe = ChooseCatastrophe();
-            stability -= CalculateCatastropheToStability();
+            stability -= currentTurn;
             tileMap.ApplyCatastrophe(catastrophe, CalculateCatastropheToStructures(), inactiveTurns);
             uiGameManager.CatastrohpeIcon(false);
             turnsToCatastrophe = -1;
@@ -225,7 +212,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Change with formula to calculate Catastrophe probability
-    bool CatastropheHappens() => UnityEngine.Random.Range(0f, 400f) <= totalContamination;
+    bool CatastropheHappens() => UnityEngine.Random.Range(0, 101) <= contamination;
 
     int ChooseCatastrophe() => UnityEngine.Random.Range(1, 4);
 

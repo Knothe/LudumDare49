@@ -5,5 +5,5 @@ using UnityEngine;
 // Los recursos al llegar a 0 de hp generan contaminación en ese turno
 [CreateAssetMenu(menuName = "TileData/Natural")]
 public class NaturalTile : TileData {
-    public override float ContaminationByDead() => contamination;
+    public override int ContaminationByDead() => contamination;
 }

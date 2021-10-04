@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: Food
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: c969e1258bc90b84cbddf7b5180664ad, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ccfc879a69b71d74f90b8f9bc301167d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

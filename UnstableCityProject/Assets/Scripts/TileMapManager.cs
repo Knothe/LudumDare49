@@ -21,7 +21,6 @@ public class TileMapManager : MonoBehaviour {
     LogicTile[,] tileValues;
     TileData[][] startingTileValues;
     Vector3Int arrayOffset;
-    bool selecting;
     Vector3Int selectedPointGrid;
     Vector3Int selectedPointArray;
     
@@ -38,7 +37,6 @@ public class TileMapManager : MonoBehaviour {
                 tileData.Initialize();
             }
         }
-        selecting = false;
         SetMapArray();
     }
 
@@ -57,7 +55,6 @@ public class TileMapManager : MonoBehaviour {
     void FillTileValues(Vector3Int size) {
         size.x++;
         size.y++;
-        Debug.Log(size);
         startingTileValues = new TileData[size.x][];
         for(Vector3Int value = Vector3Int.zero; value.x < size.x; value.x++) {
             startingTileValues[value.x] = new TileData[size.y];
@@ -142,7 +139,6 @@ public class TileMapManager : MonoBehaviour {
     public void ClearTileSelection() {
         DesactivateTileMenu();
         SetTileColour(Color.white, selectedPointGrid);
-        selecting = false;
         selectedPointGrid = Vector3Int.one * -1;
     }
 
@@ -151,7 +147,6 @@ public class TileMapManager : MonoBehaviour {
             ClearTileSelection();
             return;
         }
-        selecting = true;
         SetTileColour(Color.white, selectedPointGrid);
         selectedPointGrid = gridPosition;
         selectedPointArray = GridToArray(gridPosition);
@@ -196,7 +191,7 @@ public class TileMapManager : MonoBehaviour {
         UpdateArrayTile(selectedPointArray, data);
     }
 
-    public int CollectFromSelected(out float contamination) {
+    public int CollectFromSelected(out int contamination) {
         LogicTile selected = tileValues[selectedPointArray.x, selectedPointArray.y];
         contamination = 0;
         int material = (selected.id - 1) % 3;
@@ -281,8 +276,8 @@ public class TileMapManager : MonoBehaviour {
         UpdateArrayTile(GridToArray(indexGrid), data);
     }
 
-    public float CountContamination() {
-        float contamination = 0;
+    public int CountContamination() {
+        int contamination = 0;
         foreach(LogicTile tile in tileValues) {
             contamination += tile.contaminationByExisting;
         }
