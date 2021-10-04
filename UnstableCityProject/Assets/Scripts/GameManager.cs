@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
         contamination = 0;
         tileMap.StartGrid();
         uiGameManager.Initialize();
-        stability = 30;
+        stability = 100;
         UpdateAllUI();
         endingGame = false;
     }
@@ -164,7 +164,7 @@ public class GameManager : MonoBehaviour
     public void OpenPayMenu() {
         tileMap.ClearTileSelection();
         actionMenu = true;
-        uiGameManager.ShowTributeMenu(tributeValueChange.GetTributes(currentTurn), wood, water, ore, stability, currentTurn > totalTurns);
+        uiGameManager.ShowTributeMenu(tributeValueChange.GetTributes(currentTurn), wood, water, ore, stability, actionCount > actionsPerTurn);
         UpdateAllUI();
     }
 
@@ -211,7 +211,8 @@ public class GameManager : MonoBehaviour
     
 
     void UpdateAllUI() =>
-        uiGameManager.UpdateAll(currentTurn, actionCount, actionsPerTurn, wood, water, ore, stability);
+        uiGameManager.UpdateAll(currentTurn, actionCount, actionsPerTurn, wood, water, ore,
+            stability, tileMap.countWood, tileMap.countOre, tileMap.countWater);
 
     void ActionRealized() {
         uiGameManager.DesactivateMenus();

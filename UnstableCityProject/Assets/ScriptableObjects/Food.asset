@@ -15,7 +15,7 @@ MonoBehaviour:
   tiles:
   - {fileID: 11400000, guid: 4da4acb63707a074f8a523dfc3251097, type: 2}
   id: 6
-  hp: 15
+  hp: 7
   contamination: 3
   recolect: 1
   build: 0

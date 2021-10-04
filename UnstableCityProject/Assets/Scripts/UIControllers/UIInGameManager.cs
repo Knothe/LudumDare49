@@ -29,6 +29,9 @@ public class UIInGameManager : MonoBehaviour
     [SerializeField]
     TributeMenuData tributeMenuData;
 
+    [SerializeField]
+    TMP_Text countWood, countOre, countWater;
+
     private void Awake() {
         sumaryMenuData.Initialize();
         tributeMenuData.Initialize();
@@ -72,13 +75,17 @@ public class UIInGameManager : MonoBehaviour
         repairMenu.SetActive(true);
     }
 
-    public void UpdateAll(int turn, int action, int maxAction, int wood, int water, int ore, int stability) {
+    public void UpdateAll(int turn, int action, int maxAction, int wood, int water, int ore,
+        int stability, int countWood, int countOre, int countWater) {
         TurnNumber(turn);
         ActionNumber(action, maxAction);
         WoodNumber(wood);
         WaterNumber(water);
         OreNumber(ore);
         StabilityNumber(stability);
+        this.countWood.text = "+" + countWood.ToString();
+        this.countOre.text = "+" + countOre.ToString();
+        this.countWater.text = "+" + countWater.ToString();
     }
 
     public void TurnChangeUI(int i, int week, int stability) =>

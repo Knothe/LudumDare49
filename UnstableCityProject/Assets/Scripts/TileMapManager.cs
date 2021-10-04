@@ -28,6 +28,12 @@ public class TileMapManager : MonoBehaviour {
     Vector3Int ArrayToGrid(Vector3Int value) => value + arrayOffset;
 
     List<LogicTile> inactivePoints = new List<LogicTile>();
+
+    public int countWood { get; private set; }
+    public int countOre { get; private set; }
+    public int countWater { get; private set; }
+
+
     private void Awake() {
         dataFromTiles = new Dictionary<TileBase, TileData>();
         foreach (TileData tileData in tileDatas) {
@@ -67,6 +73,7 @@ public class TileMapManager : MonoBehaviour {
     }
 
     public void StartGrid() {
+        countWood = countOre = countWater = 0;
         inactivePoints.Clear();
         tileValues = new LogicTile[startingTileValues.Length, startingTileValues[0].Length];
         for(Vector3Int value = Vector3Int.zero; value.x < startingTileValues.Length; value.x++) {
@@ -185,14 +192,25 @@ public class TileMapManager : MonoBehaviour {
         selected.RegainHealth();
         selected.AddAction(1);
         selected.DeleteAction(8);
+        ModifyActive(1, selected.id);
     }
 
     public void BuildInSelected(int id) {
         TileData data = GetTileData(id);
         map.SetTile(selectedPointGrid, data.GetRandomTile());
         UpdateArrayTile(selectedPointArray, data);
+        ModifyActive(1, id);
     }
     
+    public void ModifyActive(int mod, int id) {
+        if (id == 4)
+            countWood += mod;
+        else if (id == 5)
+            countOre += mod;
+        else if (id == 6)
+            countWater += mod;
+    }
+
     // Ahorita los naturales están dando 2 y los humanos 1
     public int CollectFromSelected(out int contamination, out int quantity) {
         LogicTile selected = tileValues[selectedPointArray.x, selectedPointArray.y];
@@ -204,6 +222,7 @@ public class TileMapManager : MonoBehaviour {
             if (selected.DealDamage(1)) {
                 selected.DeleteAction(1);
                 selected.AddAction(8);
+                ModifyActive(-1, selected.id);
             }
         }
         else {
@@ -224,6 +243,7 @@ public class TileMapManager : MonoBehaviour {
                     if (tile.DealDamage(1)) {
                         tile.DeleteAction(1);
                         tile.AddAction(8);
+                        ModifyActive(-1, tile.id);
                     }
                     if (tile.id == 4) { wood++; }
                     if (tile.id == 5) { ore++; }
@@ -239,6 +259,7 @@ public class TileMapManager : MonoBehaviour {
             if (inactivePoints[i].inactiveTurnsLeft <= 0) {
                 inactivePoints[i].isActive = true;
                 SetTileColour(disabledColor, ArrayToGrid(inactivePoints[i].arrayLocation));
+                ModifyActive(1, inactivePoints[i].id);
                 inactivePoints.RemoveAt(i);
             }
         }
@@ -259,6 +280,7 @@ public class TileMapManager : MonoBehaviour {
             index.y = Random.Range(0, startingTileValues[0].Length);
             LogicTile tile = tileValues[index.x, index.y];
             if((tile.id == id1 || tile.id == id2) && tile.isActive && tile.CanRecolect()) {
+                ModifyActive(-1, id2);
                 tile.isActive = false;
                 tile.inactiveTurnsLeft = inactiveTurns;
                 inactivePoints.Add(tile);
@@ -274,6 +296,8 @@ public class TileMapManager : MonoBehaviour {
                 if (tile.DealDamage(damage)) {
                     tile.DeleteAction(1);
                     tile.AddAction(8);
+                    if(tile.isActive)
+                        ModifyActive(-1, tile.id);
                 }
             }
         }
@@ -283,6 +307,11 @@ public class TileMapManager : MonoBehaviour {
     /// <param name="indexGrid">Grid index to destroy</param>
     void DestroyAt(Vector3Int indexGrid) {
         TileData data = GetTileData(0);
+
+        Vector3Int indexArray = GridToArray(indexGrid);
+        if (tileValues[indexArray.x, indexArray.y].id >= 4)
+            ModifyActive(-1, tileValues[indexArray.x, indexArray.y].id);
+
         map.SetTile(indexGrid, data.GetRandomTile());
         UpdateArrayTile(GridToArray(indexGrid), data);
     }
