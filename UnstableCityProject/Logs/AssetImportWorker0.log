@@ -1,77 +1,196 @@
 Using pre-set license
 Built from '2020.3/staging' branch; Version is '2020.3.16f1 (049d6eca3c44) revision 302446'; Using compiler version '192528614'; Build Type 'Release'
-OS: 'Windows 10 Home Single Language; OS build 19043.1237; Version 2009; 64bit' Language: 'en' Physical Memory: 12142 MB
+OS: 'Windows 10 Home Single Language; OS build 18363.1256; Version 1909; 64bit' Language: 'es' Physical Memory: 8051 MB
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
 
  COMMAND LINE ARGUMENTS:
-C:\Program Files\Unity\Hub\Editor\2020.3.16f1\Editor\Unity.exe
+D:\Program Files\Unity\2020.3.16f1\Editor\Unity.exe
 -adb2
 -batchMode
 -noUpm
 -name
 AssetImportWorker0
 -projectPath
-D:/Gamedev/GameJams/LudumDare49/UnstableCityProject
+D:/lulep/Documents/Unity/LudumDare49/UnstableCityProject
 -logFile
 Logs/AssetImportWorker0.log
 -srvPort
-60459
-Successfully changed project path to: D:/Gamedev/GameJams/LudumDare49/UnstableCityProject
-D:/Gamedev/GameJams/LudumDare49/UnstableCityProject
+55643
+Successfully changed project path to: D:/lulep/Documents/Unity/LudumDare49/UnstableCityProject
+D:/lulep/Documents/Unity/LudumDare49/UnstableCityProject
 Using Asset Import Pipeline V2.
-Refreshing native plugins compatible for Editor in 102.01 ms, found 2 plugins.
+Refreshing native plugins compatible for Editor in 51.10 ms, found 2 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 2020.3.16f1 (049d6eca3c44)
-[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2020.3.16f1/Editor/Data/Resources/UnitySubsystems
-[Subsystems] Discovering subsystems at path D:/Gamedev/GameJams/LudumDare49/UnstableCityProject/Assets
+[Subsystems] Discovering subsystems at path D:/Program Files/Unity/2020.3.16f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path D:/lulep/Documents/Unity/LudumDare49/UnstableCityProject/Assets
 GfxDevice: creating device client; threaded=0
 Direct3D:
     Version:  Direct3D 11.0 [level 11.1]
     Renderer: NVIDIA GeForce GTX 1050 Ti (ID=0x1c8c)
     Vendor:   
-    VRAM:     4021 MB
-    Driver:   27.21.14.6677
+    VRAM:     4018 MB
+    Driver:   27.21.14.6231
 Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
 Initialize mono
-Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2020.3.16f1/Editor/Data/Managed'
-Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2020.3.16f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
-Mono config path = 'C:/Program Files/Unity/Hub/Editor/2020.3.16f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56424
+Mono path[0] = 'D:/Program Files/Unity/2020.3.16f1/Editor/Data/Managed'
+Mono path[1] = 'D:/Program Files/Unity/2020.3.16f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
+Mono config path = 'D:/Program Files/Unity/2020.3.16f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56912
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
-Register platform support module: C:/Program Files/Unity/Hub/Editor/2020.3.16f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.005050 seconds.
+Register platform support module: D:/Program Files/Unity/2020.3.16f1/Editor/Data/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll
+Register platform support module: D:/Program Files/Unity/2020.3.16f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Register platform support module: D:/Program Files/Unity/2020.3.16f1/Editor/Data/PlaybackEngines/LinuxStandaloneSupport/UnityEditor.LinuxStandalone.Extensions.dll
+Registered in 0.005563 seconds.
+Native extension for LinuxStandalone target not found
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 136.74 ms, found 2 plugins.
+Native extension for OSXStandalone target not found
+Refreshing native plugins compatible for Editor in 47.07 ms, found 2 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Mono: successfully reloaded assembly
-- Completed reload, in  6.197 seconds
+- Completed reload, in  1.338 seconds
 Domain Reload Profiling:
-	ReloadAssembly (6197ms)
-		BeginReloadAssembly (117ms)
+	ReloadAssembly (1338ms)
+		BeginReloadAssembly (130ms)
 			ExecutionOrderSort (0ms)
 			DisableScriptedObjects (0ms)
 			BackupInstance (0ms)
 			ReleaseScriptingObjects (0ms)
-			CreateAndSetChildDomain (2ms)
-		EndReloadAssembly (1612ms)
-			LoadAssemblies (111ms)
+			CreateAndSetChildDomain (1ms)
+		EndReloadAssembly (434ms)
+			LoadAssemblies (126ms)
 			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (814ms)
+			SetupTypeCache (149ms)
 			ReleaseScriptCaches (0ms)
-			RebuildScriptCaches (90ms)
-			SetupLoadedEditorAssemblies (500ms)
+			RebuildScriptCaches (32ms)
+			SetupLoadedEditorAssemblies (173ms)
 				LogAssemblyErrors (0ms)
-				InitializePlatformSupportModulesInManaged (10ms)
-				SetLoadedEditorAssemblies (1ms)
-				RefreshPlugins (137ms)
-				BeforeProcessingInitializeOnLoad (35ms)
-				ProcessInitializeOnLoadAttributes (244ms)
-				ProcessInitializeOnLoadMethodAttributes (73ms)
+				InitializePlatformSupportModulesInManaged (7ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (47ms)
+				BeforeProcessingInitializeOnLoad (16ms)
+				ProcessInitializeOnLoadAttributes (75ms)
+				ProcessInitializeOnLoadMethodAttributes (27ms)
 				AfterProcessingInitializeOnLoad (0ms)
-				EditorAssembliesLoaded (1ms)
+				EditorAssembliesLoaded (0ms)
 			ExecutionOrderSort2 (0ms)
 			AwakeInstancesAfterBackupRestoration (0ms)
 Platform modules already initialized, skipping
 Registering precompiled user dll's ...
-Registered in 0.391316 seconds.
+Registered in 0.007754 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for LinuxStandalone target not found
+Native extension for WindowsStandalone target not found
+Native extension for OSXStandalone target not found
+Refreshing native plugins compatible for Editor in 49.10 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.437 seconds
+Domain Reload Profiling:
+	ReloadAssembly (1438ms)
+		BeginReloadAssembly (156ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (5ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (18ms)
+		EndReloadAssembly (1209ms)
+			LoadAssemblies (210ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (341ms)
+			ReleaseScriptCaches (1ms)
+			RebuildScriptCaches (55ms)
+			SetupLoadedEditorAssemblies (453ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (7ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (49ms)
+				BeforeProcessingInitializeOnLoad (104ms)
+				ProcessInitializeOnLoadAttributes (271ms)
+				ProcessInitializeOnLoadMethodAttributes (8ms)
+				AfterProcessingInitializeOnLoad (13ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (6ms)
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.08 seconds
+Refreshing native plugins compatible for Editor in 0.48 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2752 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 122.8 MB.
+System memory in use after: 123.0 MB.
+
+Unloading 23 unused Assets to reduce memory usage. Loaded Objects now: 3191.
+Total: 3.467500 ms (FindLiveObjects: 0.295300 ms CreateObjectMapping: 0.119500 ms MarkObjects: 2.976900 ms  DeleteObjects: 0.074800 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:video-codec-MediaFoundation-h265: 746d11721c4dcdbdad8f713fa42b33f4 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  path: Assets/Scenes/Main.unity
+  artifactKey: Guid(9fc0d4010bbf28b4594072e72b8655ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/Main.unity using Guid(9fc0d4010bbf28b4594072e72b8655ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6439d50dec3bf4eb48af73e91872f2ff') in 0.021364 seconds 
+  Import took 0.025672 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 391.596682 seconds.
+  path: Assets/Font/GemunuLibre-Title.asset
+  artifactKey: Guid(7cb299029861bf94282d7ccf11c03208) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Font/GemunuLibre-Title.asset using Guid(7cb299029861bf94282d7ccf11c03208) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9df2002b0f35fad9d431be70fda9cae8') in 0.171317 seconds 
+  Import took 0.176060 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2449.141121 seconds.
+  path: Assets/Sprites/DeathByGrowth_UIAtlas-2.png
+  artifactKey: Guid(bb67dc6d087ef7d4a85a1742ea0ae591) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Sprites/DeathByGrowth_UIAtlas-2.png using Guid(bb67dc6d087ef7d4a85a1742ea0ae591) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '175db9d844119aaee001893c616e744c') in 0.124301 seconds 
+  Import took 0.155040 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 79.211234 seconds.
+  path: Assets/Font/GemunuLibre-Title.asset
+  artifactKey: Guid(7cb299029861bf94282d7ccf11c03208) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Font/GemunuLibre-Title.asset using Guid(7cb299029861bf94282d7ccf11c03208) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '73c779bd6f1a6a083ae3999f7265eb02') in 0.037026 seconds 
+  Import took 0.092550 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 314.945250 seconds.
+  path: Assets/Font/GemunuLibre-Title.asset
+  artifactKey: Guid(7cb299029861bf94282d7ccf11c03208) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Font/GemunuLibre-Title.asset using Guid(7cb299029861bf94282d7ccf11c03208) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd23f233938a53072435f3ec969a5da5a') in 0.037384 seconds 
+  Import took 0.042451 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 386.133301 seconds.
+  path: Assets/Font/GemunuLibre-Title.asset
+  artifactKey: Guid(7cb299029861bf94282d7ccf11c03208) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Font/GemunuLibre-Title.asset using Guid(7cb299029861bf94282d7ccf11c03208) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2e5fa80cda3f109fc476fa1b48f59676') in 0.043388 seconds 
+  Import took 0.049224 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.017106 seconds.
+  path: Assets/Font/GemunuLibre-Title.asset
+  artifactKey: Guid(7cb299029861bf94282d7ccf11c03208) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Font/GemunuLibre-Title.asset using Guid(7cb299029861bf94282d7ccf11c03208) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2e5fa80cda3f109fc476fa1b48f59676') in 0.035301 seconds 
+  Import took 0.039992 seconds .
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
