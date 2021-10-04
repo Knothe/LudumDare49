@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
     int wood, water, ore;
     int constantContamination;
     int contamination { get; set; }
-    int stability = 100;
+    int stability;
     bool endingGame;
 
     // Estabilidad -> float
@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
         contamination = 0;
         tileMap.StartGrid();
         uiGameManager.Initialize();
-        stability = 100;
+        stability = 30;
         UpdateAllUI();
         endingGame = false;
     }
@@ -150,11 +150,27 @@ public class GameManager : MonoBehaviour
         ActionRealized();
     }
 
-    public void SkipTurn() {
-        EndTurn();
+    public void CloseMenu() {
+        uiGameManager.DesactivateMenus();
+        tileMap.ClearTileSelection();
+        actionMenu = false;
+    }
+
+    public void ClosePayMenu() {
+        uiGameManager.HideTributeMenu();
+        actionMenu = false;
+    }
+
+    public void OpenPayMenu() {
+        tileMap.ClearTileSelection();
+        actionMenu = true;
+        uiGameManager.ShowTributeMenu(tributeValueChange.GetTributes(currentTurn), wood, water, ore, stability, currentTurn > totalTurns);
+        UpdateAllUI();
     }
 
     public void OnClick(int i, Vector2 mousePos) {
+        if (actionCount > actionsPerTurn)
+            return;
         if (actionMenu) {
             uiGameManager.DesactivateMenus();
             tileMap.ClearTileSelection();
@@ -171,16 +187,21 @@ public class GameManager : MonoBehaviour
         uiGameManager.DesactivateTurnChangeUI();
     }
 
+    // Make here the turn change
     public void ApplyTribute() {
+        actionCount = 1;
+        currentTurn++;
+
         stability = uiGameManager.GetTributeData(out int giveWood, out int giveWater, out int giveOre);
-        if (endingGame || stability <= 0) {
-            EndGame();
-            return;
-        }
         wood -= giveWood;
         water -= giveWater;
         ore -= giveOre;
         int catastrophe = CatastropheActions();
+        if (currentTurn > totalTurns || stability <= 0) {
+            EndGame();
+            return;
+        }
+        audioManager.SwapTrack((stability >= 25) ? 0 : 1);
         tileMap.GridTurnCheck(ref wood, ref ore, ref water);
         uiGameManager.TurnChangeUI(catastrophe, currentTurn, stability);
         UpdateAllUI();
@@ -203,14 +224,8 @@ public class GameManager : MonoBehaviour
     }
 
     void EndTurn() {
-        actionCount = 1;
-        currentTurn++;
         contamination = constantContamination + tileMap.CountContamination();
-        Debug.Log(contamination);
-        if (currentTurn > totalTurns) 
-            endingGame = true;
-        uiGameManager.ShowTributeMenu(tributeValueChange.GetTributes(currentTurn), wood, water, ore, stability);
-        UpdateAllUI();
+        OpenPayMenu();
     }
 
     int CatastropheActions() {

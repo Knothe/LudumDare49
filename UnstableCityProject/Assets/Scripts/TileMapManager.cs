@@ -11,7 +11,7 @@ public class TileMapManager : MonoBehaviour {
     List<TileData> tileDatas;
 
     [SerializeField]
-    Color selectColor;
+    Color selectColor, disabledColor;
 
     [SerializeField]
     ActionUIController actionUI;
@@ -28,7 +28,6 @@ public class TileMapManager : MonoBehaviour {
     Vector3Int ArrayToGrid(Vector3Int value) => value + arrayOffset;
 
     List<LogicTile> inactivePoints = new List<LogicTile>();
-
     private void Awake() {
         dataFromTiles = new Dictionary<TileBase, TileData>();
         foreach (TileData tileData in tileDatas) {
@@ -72,7 +71,7 @@ public class TileMapManager : MonoBehaviour {
         tileValues = new LogicTile[startingTileValues.Length, startingTileValues[0].Length];
         for(Vector3Int value = Vector3Int.zero; value.x < startingTileValues.Length; value.x++) {
             for(value.y = 0; value.y < startingTileValues[value.x].Length; value.y++) {
-                tileValues[value.x, value.y] = new LogicTile(startingTileValues[value.x][value.y]);
+                tileValues[value.x, value.y] = new LogicTile(startingTileValues[value.x][value.y], value);
                 map.SetTile(ArrayToGrid(value), startingTileValues[value.x][value.y].GetRandomTile());
             }
         }
@@ -148,13 +147,14 @@ public class TileMapManager : MonoBehaviour {
             ClearTileSelection();
             return false;
         }
-        SetTileColour(Color.white, selectedPointGrid);
-        selectedPointGrid = gridPosition;
-        selectedPointArray = GridToArray(gridPosition);
-        if(!tileValues[selectedPointArray.x, selectedPointArray.y].isActive) {
+        Vector3Int arrayPos = GridToArray(gridPosition);
+        if (!tileValues[arrayPos.x, arrayPos.y].isActive) {
             ClearTileSelection();
             return false;
         }
+        SetTileColour(Color.white, selectedPointGrid);
+        selectedPointGrid = gridPosition;
+        selectedPointArray = arrayPos;
         actionUI.ShowMenu(tileValues[selectedPointArray.x, selectedPointArray.y].actionValue, Input.mousePosition, 
             tileValues[selectedPointArray.x, selectedPointArray.y].healthPercentage);
         SetTileColour(selectColor, selectedPointGrid);
@@ -238,6 +238,7 @@ public class TileMapManager : MonoBehaviour {
             inactivePoints[i].inactiveTurnsLeft--;
             if (inactivePoints[i].inactiveTurnsLeft <= 0) {
                 inactivePoints[i].isActive = true;
+                SetTileColour(disabledColor, ArrayToGrid(inactivePoints[i].arrayLocation));
                 inactivePoints.RemoveAt(i);
             }
         }
@@ -252,7 +253,7 @@ public class TileMapManager : MonoBehaviour {
 
     void DesactivateRandomTile(int id1, int id2, int inactiveTurns) {
         bool desactivated = false;
-        Vector2Int index = Vector2Int.zero;
+        Vector3Int index = Vector3Int.zero;
         while (!desactivated) {
             index.x = Random.Range(0, startingTileValues.Length);
             index.y = Random.Range(0, startingTileValues[0].Length);
@@ -261,6 +262,7 @@ public class TileMapManager : MonoBehaviour {
                 tile.isActive = false;
                 tile.inactiveTurnsLeft = inactiveTurns;
                 inactivePoints.Add(tile);
+                SetTileColour(disabledColor, ArrayToGrid(index));
                 return;
             }
         }
@@ -294,7 +296,7 @@ public class TileMapManager : MonoBehaviour {
     }
 
     void UpdateArrayTile(Vector3Int indexArray, TileData data) =>
-        tileValues[indexArray.x, indexArray.y].SetNewValues(data);
+        tileValues[indexArray.x, indexArray.y].SetNewValues(data, indexArray);
 
     TileData GetTileData(int id) {
         foreach(TileData tile in tileDatas) {

@@ -42,6 +42,7 @@ public class UIInGameManager : MonoBehaviour
         buildMenu.SetActive(false);
         destroyMenu.SetActive(false);
         repairMenu.SetActive(false);
+        HideTributeMenu();
     }
 
     public void SetBuildText(int rWood, int rWater, int rOre, int fWood, int fWater, int fOre, int gWood, int gWater, int gOre) {
@@ -117,8 +118,11 @@ public class UIInGameManager : MonoBehaviour
         stabilityFill.fillAmount = value / 100f;
     }
 
-    public void ShowTributeMenu(int need, int hWood, int hWater, int hOre, int stability) =>
-        tributeMenuData.ShowMenu(need, need, need, hWood, hWater, hOre, stability);
+    public void HideTributeMenu() =>
+        tributeMenuData.HideMenu();
+
+    public void ShowTributeMenu(int need, int hWood, int hWater, int hOre, int stability, bool end) =>
+        tributeMenuData.ShowMenu(need, need, need, hWood, hWater, hOre, stability, end);
     
     public int GetTributeData(out int giveWood, out int giveWater, out int giveOre) =>
         tributeMenuData.ApplyTribute(out giveWood, out giveWater, out giveOre);
@@ -185,7 +189,7 @@ public class TributeMenuData {
     int current, futureStability;
 
     [SerializeField]
-    GameObject tributeMenu;
+    GameObject tributeMenu, backPanel, closeButton, sureToPay;
 
     [SerializeField]
     TMP_Text stabilityText;
@@ -208,7 +212,15 @@ public class TributeMenuData {
         return futureStability;
     }
 
-    public void ShowMenu(int nWood, int nWater, int nOre, int hWood, int hWater, int hOre, int stability) {
+    public void HideMenu() {
+        sureToPay.SetActive(false);
+        tributeMenu.gameObject.SetActive(false);
+    }
+
+    public void ShowMenu(int nWood, int nWater, int nOre, int hWood, int hWater, int hOre, int stability, bool end) {
+        sureToPay.SetActive(false);
+        backPanel.SetActive(end);
+        closeButton.SetActive(!end);
         tributeMenu.SetActive(true);
         current = stability;
         giveWood = giveWater = giveOre = 0;

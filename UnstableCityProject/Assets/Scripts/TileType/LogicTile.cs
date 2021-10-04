@@ -15,12 +15,15 @@ public class LogicTile
     int totalTurnsToRecover { get; }
     int recoverCount;
 
-    public LogicTile(TileData data) {
-        SetNewValues(data);
+    public Vector3Int arrayLocation { get; private set; }
+
+    public LogicTile(TileData data, Vector3Int arrayLocation) {
+        SetNewValues(data, arrayLocation);
         totalTurnsToRecover = 4;
     }
 
-    public void SetNewValues(TileData data) {
+    public void SetNewValues(TileData data, Vector3Int arrayLocation) {
+        this.arrayLocation = arrayLocation;
         maxHealth = data.hp;
         health = (maxHealth < 0) ? 1 : maxHealth;
         id = data.id;
