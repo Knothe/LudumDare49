@@ -18334,7 +18334,7 @@ MonoBehaviour:
     ore: 2
     water: 2
   tributeValueChange:
-    changeTributeTurn: 
+    changeTributeTurn: 070000000f000000160000001d000000240000002b000000320000003300000034000000
 --- !u!1 &1659088841
 GameObject:
   m_ObjectHideFlags: 0
