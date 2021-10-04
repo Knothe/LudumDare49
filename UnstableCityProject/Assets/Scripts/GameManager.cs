@@ -177,6 +177,7 @@ public class GameManager : MonoBehaviour
             actionMenu = false;
         }
         else {
+            // Modify to obtain the tile id
             if (tileMap.OnClick(i, mousePos))
                 audioManager.PlaySFX(AudioSFXClip.POP);
         }
@@ -209,10 +210,9 @@ public class GameManager : MonoBehaviour
 
     int CalculateCatastropheToStructures() => (int)Mathf.Floor(currentTurn / 10f) + 1;
     
-
     void UpdateAllUI() =>
         uiGameManager.UpdateAll(currentTurn, actionCount, actionsPerTurn, wood, water, ore,
-            stability, tileMap.countWood, tileMap.countOre, tileMap.countWater);
+            stability, tileMap.countWood, tileMap.countOre, tileMap.countWater, totalTurns);
 
     void ActionRealized() {
         uiGameManager.DesactivateMenus();

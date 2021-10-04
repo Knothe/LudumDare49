@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 using data = StaticData;
 
@@ -13,13 +14,19 @@ public class ActionUIController : MonoBehaviour
     [SerializeField] Button repair;
     [SerializeField] Slider healthSlider;
 
+    [SerializeField] GameObject collectDescription;
+    [SerializeField] Image materialType;
+
+    [SerializeField] List<Sprite> materials;
+    [SerializeField] TMP_Text quantity;
+
     private void Awake() {
         SetAll(false);
     }
 
-    public void ShowMenu(int actions, Vector2 mousePos, float healthPercentage) {
+    public void ShowMenu(int actions, Vector2 mousePos, float healthPercentage, int id) {
         SetAll(true);
-        recolect.interactable = data.CanRecolect(actions);
+        SetCollect(actions, id);
         build.interactable = data.CanBuild(actions);
         destroy.interactable = data.CanDestroy(actions);
         repair.interactable = data.CanRepair(actions);
@@ -27,6 +34,18 @@ public class ActionUIController : MonoBehaviour
         healthSlider.value = healthPercentage;
         if (healthPercentage < 0)
             healthSlider.gameObject.SetActive(false);
+    }
+
+    void SetCollect(int actions, int id) {
+        bool b = data.CanRecolect(actions);
+        recolect.interactable = b;
+        collectDescription.SetActive(b);
+        if (b) {
+            int q = (id >= 4) ? 1 : 2;
+            int type = (id >= 4) ? id - 4 : id - 1;
+            quantity.text = "+" + q;
+            materialType.sprite = materials[type];
+        }
     }
 
     public void Desactivate() {

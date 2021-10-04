@@ -76,8 +76,8 @@ public class UIInGameManager : MonoBehaviour
     }
 
     public void UpdateAll(int turn, int action, int maxAction, int wood, int water, int ore,
-        int stability, int countWood, int countOre, int countWater) {
-        TurnNumber(turn);
+        int stability, int countWood, int countOre, int countWater, int maxTurn) {
+        TurnNumber(turn, maxTurn);
         ActionNumber(action, maxAction);
         WoodNumber(wood);
         WaterNumber(water);
@@ -94,8 +94,8 @@ public class UIInGameManager : MonoBehaviour
     public void DesactivateTurnChangeUI() =>
         sumaryMenuData.HideMenu();
 
-    void TurnNumber(int value) {
-        turn.text = value.ToString();
+    void TurnNumber(int value, int maxTurn) {
+        turn.text = value.ToString() + "/" + maxTurn;
     }
 
     void ActionNumber(int action, int max) {

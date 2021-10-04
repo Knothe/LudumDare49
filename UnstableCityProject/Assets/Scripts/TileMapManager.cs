@@ -163,7 +163,7 @@ public class TileMapManager : MonoBehaviour {
         selectedPointGrid = gridPosition;
         selectedPointArray = arrayPos;
         actionUI.ShowMenu(tileValues[selectedPointArray.x, selectedPointArray.y].actionValue, Input.mousePosition, 
-            tileValues[selectedPointArray.x, selectedPointArray.y].healthPercentage);
+            tileValues[selectedPointArray.x, selectedPointArray.y].healthPercentage, tileValues[selectedPointArray.x, selectedPointArray.y].id);
         SetTileColour(selectColor, selectedPointGrid);
         return true;
     }
