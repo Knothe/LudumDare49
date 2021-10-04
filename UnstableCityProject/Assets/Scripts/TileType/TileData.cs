@@ -35,4 +35,5 @@ public class TileData : ScriptableObject
         int index = Random.Range(0, tiles.Length - 1);
         return tiles[index];
     }
+
 }

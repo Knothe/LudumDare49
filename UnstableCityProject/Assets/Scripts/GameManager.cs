@@ -7,7 +7,13 @@ using System;
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
+    UIStateManager uIStateManager;
+
+    [SerializeField]
     UIInGameManager uiGameManager;
+
+    [SerializeField]
+    UIEndingController endingUI;
 
     [SerializeField]
     PlayerManager playerManager;
@@ -16,28 +22,55 @@ public class GameManager : MonoBehaviour
     TileMapManager tileMap;
 
     [SerializeField]
-    int actionsPerTurn, totalTurns;
+    int actionsPerTurn, totalTurns, maxTurnsCatastrophe, inactiveTurns;
 
     [SerializeField]
-    ConstructionCost homeCost, factoryCost, foodCost;
+    ConstructionCost homeCost, factoryCost, foodCost, repairCost;
 
+    [SerializeField]
+    float contDamageToStability;
+    
     int actionCount, currentTurn;
     bool actionMenu = false;
+    int turnsToCatastrophe = -1;
 
     int wood, water, ore;
     float constantContamination;
+    float totalContamination;
+
+    int stability = 100;
+
+    // Estabilidad -> float
+    // Afectada por: Desastre Natural (-) ocurre, Contaminación (-) ft, Tributo (+-) ocurre
+
+    // Pantalla de final de turno es la del tributo
+    // Después sale una de "resumen" con # de semana y si ocurrió una catástrofe
+
+    // La catástrofe ocurrirá en un # de turnos
 
     private void Awake() {
-        wood = water = ore = 0;
-        actionCount = 1;
-        currentTurn = 1;
         uiGameManager.SetBuildText(homeCost.Text, factoryCost.Text, foodCost.Text);
         UpdateAllUI();
         constantContamination = 0;
     }
 
-    public void FinishedTransition(CanvasID canvas) {
+    public void StartedTransition(CanvasID canvas) {
+        if(canvas == CanvasID.INGAME) 
+            StartGame();
+        else if(canvas == CanvasID.PRESENTATION)
+            tileMap.StartGrid();
+    }
 
+    void StartGame() {
+        actionCount = 1;
+        currentTurn = 1;
+        wood = water = ore = 0;
+        constantContamination = 0;
+        totalContamination = 0;
+        tileMap.StartGrid();
+        uiGameManager.Initialize();
+        stability = 100;
+        UpdateAllUI();
     }
 
     public void ShowMenu(int i) {
@@ -52,7 +85,7 @@ public class GameManager : MonoBehaviour
                 break;
             case 1: uiGameManager.DestroyMenu();
                 break;
-            case 2: uiGameManager.RepairMenu();
+            case 2: uiGameManager.RepairMenu(repairCost.CanBuild(wood, ore, water), repairCost.Text);
                 break;
         }
     }
@@ -65,7 +98,6 @@ public class GameManager : MonoBehaviour
         else if(id == 6)
             SubstractBuildCost(foodCost);
         tileMap.BuildInSelected(id);
-        uiGameManager.DesactivateMenus();
         tileMap.ClearTileSelection();
         ActionRealized();
     }
@@ -97,7 +129,19 @@ public class GameManager : MonoBehaviour
     }
 
     public void Repair() {
-        
+        wood -= repairCost.wood;
+        water -= repairCost.water;
+        ore -= repairCost.ore;
+
+        tileMap.RepairSelected();
+
+        tileMap.ClearTileSelection();
+        UpdateAllUI();
+        ActionRealized();
+    }
+
+    public void SkipTurn() {
+        EndTurn();
     }
 
     public void OnClick(int i, Vector2 mousePos) {
@@ -111,12 +155,37 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void StartNextTurn() {
+        UpdateAllUI();
+        uiGameManager.DesactivateTurnChangeUI();
+    }
+
+    public void ApplyTribute() {
+        stability = uiGameManager.GetTributeData(out int giveWood, out int giveWater, out int giveOre);
+        wood -= giveWood;
+        water -= giveWater;
+        ore -= giveOre;
+        int catastrophe = CatastropheActions();
+        tileMap.GridTurnCheck(ref wood, ref ore, ref water);
+        uiGameManager.TurnChangeUI(catastrophe, stability);
+        UpdateAllUI();
+    }
+
+    int CalculateCatastropheToStability() {
+        return 10;
+    }
+
+    int CalculateCatastropheToStructures() {
+        return 2;
+    }
+
     void UpdateAllUI() =>
-        uiGameManager.UpdateAll(currentTurn, actionCount, actionsPerTurn, wood, water, ore);
+        uiGameManager.UpdateAll(currentTurn, actionCount, actionsPerTurn, wood, water, ore, stability);
 
     void ActionRealized() {
+        uiGameManager.DesactivateMenus();
         actionCount++;
-        if(actionCount > actionsPerTurn) {
+        if (actionCount > actionsPerTurn) {
             EndTurn();
             return;
         }
@@ -126,18 +195,43 @@ public class GameManager : MonoBehaviour
     void EndTurn() {
         actionCount = 1;
         currentTurn++;
-        float cont = constantContamination + tileMap.CountContamination();
-        Debug.Log("Contamination: " + cont);
-        if(currentTurn > totalTurns) {
+        totalContamination += (constantContamination + tileMap.CountContamination());
+        stability -= (int)(contDamageToStability * totalContamination);
+        if (currentTurn > totalTurns) {
             EndGame();
             return;
         }
-        // Calcular contaminación y Rollear catástrofe
+        uiGameManager.ShowTributeMenu(3, 3, 3, wood, water, ore, stability);
         UpdateAllUI();
     }
 
+    int CatastropheActions() {
+        turnsToCatastrophe--;
+        if (turnsToCatastrophe == 0) {
+            int catastrophe = ChooseCatastrophe();
+            stability -= CalculateCatastropheToStability();
+            tileMap.ApplyCatastrophe(catastrophe, CalculateCatastropheToStructures(), inactiveTurns);
+            uiGameManager.CatastrohpeIcon(false);
+            turnsToCatastrophe = -1;
+            return catastrophe;
+        }
+        else if (turnsToCatastrophe < 0) {
+            if (CatastropheHappens()) {
+                turnsToCatastrophe = maxTurnsCatastrophe;
+                uiGameManager.CatastrohpeIcon(true);
+            }
+        }
+        return 0;
+    }
+
+    // Change with formula to calculate Catastrophe probability
+    bool CatastropheHappens() => UnityEngine.Random.Range(0f, 400f) <= totalContamination;
+
+    int ChooseCatastrophe() => UnityEngine.Random.Range(1, 4);
+
     void EndGame() {
-        Debug.Log("EndGame");
+        uIStateManager.StartUITransition(CanvasID.ENDING, 2, 10);
+        endingUI.SetEndingState(stability > 0);
     }
 }
 

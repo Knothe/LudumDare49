@@ -36,7 +36,7 @@ public class UIStateManager : MonoBehaviour
     }
 
     public void StartGame() {
-        
+        Debug.Log("Game Started"); // ?
     }
 
     public void EndGame() {
@@ -46,13 +46,20 @@ public class UIStateManager : MonoBehaviour
     void EndTransition() {
         transition.EndTransition();
         currentCanvas = nextCanvas;
-        gameManager.FinishedTransition(currentCanvas);
     }
 
     public void StartUITransition(UITransitionData data) {
         float camNextSize = (data.camNextSize < 1) ? cam.orthographicSize : data.camNextSize; // Si el valor es menor a 1, se mantiene el tamaño
         nextCanvas = data.canvasObjective;
         transition.Set(GetCanvas(currentCanvas), GetCanvas(nextCanvas), data.transitionTime, camNextSize);
+        gameManager.StartedTransition(nextCanvas);
+    }
+
+    public void StartUITransition(CanvasID to, float transitionTime, float camNextSize) {
+        camNextSize = (camNextSize < 1) ? cam.orthographicSize : camNextSize;
+        nextCanvas = to;
+        transition.Set(GetCanvas(currentCanvas), GetCanvas(to), transitionTime, camNextSize);
+        gameManager.StartedTransition(nextCanvas);
     }
 
     CanvasGroup GetCanvas(CanvasID canvas) {

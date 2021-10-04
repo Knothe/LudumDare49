@@ -19,13 +19,16 @@ public class TileMapManager : MonoBehaviour {
     Dictionary<TileBase, TileData> dataFromTiles;
     //Tile selectedTile;
     LogicTile[,] tileValues;
+    TileData[][] startingTileValues;
     Vector3Int arrayOffset;
     bool selecting;
     Vector3Int selectedPointGrid;
     Vector3Int selectedPointArray;
-
+    
     Vector3Int GridToArray(Vector3Int value) => value - arrayOffset;
     Vector3Int ArrayToGrid(Vector3Int value) => value + arrayOffset;
+
+    List<LogicTile> inactivePoints = new List<LogicTile>();
 
     private void Awake() {
         dataFromTiles = new Dictionary<TileBase, TileData>();
@@ -35,8 +38,6 @@ public class TileMapManager : MonoBehaviour {
                 tileData.Initialize();
             }
         }
-        //selectedTile = new Tile();
-        //selectedTile.tileBase = null;
         selecting = false;
         SetMapArray();
     }
@@ -57,17 +58,29 @@ public class TileMapManager : MonoBehaviour {
         size.x++;
         size.y++;
         Debug.Log(size);
-        tileValues = new LogicTile[size.x, size.y];
+        startingTileValues = new TileData[size.x][];
         for(Vector3Int value = Vector3Int.zero; value.x < size.x; value.x++) {
+            startingTileValues[value.x] = new TileData[size.y];
             for(value.y = 0; value.y < size.y; value.y++) {
                 TileData data = GetTileData(value + arrayOffset);
                 if (data == null)
                     continue;
-                tileValues[value.x, value.y] = new LogicTile(data);
+                startingTileValues[value.x][value.y] = data;
             }
         }
     }
 
+    public void StartGrid() {
+        inactivePoints.Clear();
+        tileValues = new LogicTile[startingTileValues.Length, startingTileValues[0].Length];
+        for(Vector3Int value = Vector3Int.zero; value.x < startingTileValues.Length; value.x++) {
+            for(value.y = 0; value.y < startingTileValues[value.x].Length; value.y++) {
+                tileValues[value.x, value.y] = new LogicTile(startingTileValues[value.x][value.y]);
+                map.SetTile(ArrayToGrid(value), startingTileValues[value.x][value.y].GetRandomTile());
+            }
+        }
+
+    }
     bool FindInferiorLimit(out Vector3Int inferiorLimit, out Vector3Int superiorLimit) {
         BoundsInt b = map.cellBounds;
         inferiorLimit = b.min;
@@ -142,6 +155,10 @@ public class TileMapManager : MonoBehaviour {
         SetTileColour(Color.white, selectedPointGrid);
         selectedPointGrid = gridPosition;
         selectedPointArray = GridToArray(gridPosition);
+        if(!tileValues[selectedPointArray.x, selectedPointArray.y].isActive) {
+            ClearTileSelection();
+            return;
+        }
         actionUI.ShowMenu(tileValues[selectedPointArray.x, selectedPointArray.y].actionValue, Input.mousePosition, 
             tileValues[selectedPointArray.x, selectedPointArray.y].healthPercentage);
         SetTileColour(selectColor, selectedPointGrid);
@@ -167,7 +184,10 @@ public class TileMapManager : MonoBehaviour {
     }
 
     public void RepairSelected() {
-        // No sé qué conlleva reparar algo
+        LogicTile selected = tileValues[selectedPointArray.x, selectedPointArray.y];
+        selected.RegainHealth();
+        selected.AddAction(1);
+        selected.DeleteAction(8);
     }
 
     public void BuildInSelected(int id) {
@@ -182,6 +202,10 @@ public class TileMapManager : MonoBehaviour {
         int material = (selected.id - 1) % 3;
         if (selected.id >= 4) {
             // Colecting from human made stuff
+            if (selected.DealDamage(1)) {
+                selected.DeleteAction(1);
+                selected.AddAction(8);
+            }
         }
         else {
             // Colecting from nature
@@ -191,6 +215,62 @@ public class TileMapManager : MonoBehaviour {
             }
         }
         return material;
+    }
+
+    public void GridTurnCheck(ref int wood, ref int ore, ref int water) {
+        wood = ore = water = 0;
+        foreach(LogicTile tile in tileValues) {
+            if(tile.id >= 4 && tile.isActive && tile.CanRecolect()) {
+                if (tile.DealDamage(1)) { 
+                    tile.DeleteAction(1);
+                    tile.AddAction(8);
+                }
+                if (tile.id == 4) { wood++; }
+                if(tile.id == 5) { ore++; }
+                if(tile.id == 6) { water++; }
+            }
+        }
+        for(int i = inactivePoints.Count - 1; i >= 0; i--) {
+            inactivePoints[i].inactiveTurnsLeft--;
+            if (inactivePoints[i].inactiveTurnsLeft <= 0) {
+                inactivePoints[i].isActive = true;
+                inactivePoints.RemoveAt(i);
+            }
+        }
+    }
+
+    public void ApplyCatastrophe(int type, int damage, int inactiveTurns) {
+        int type2 = type + 3;
+        DesactivateRandomTile(type, type2, inactiveTurns);
+        DesactivateRandomTile(type, type2, inactiveTurns);
+        DealDamageSameType(type2, damage);
+    }
+
+    void DesactivateRandomTile(int id1, int id2, int inactiveTurns) {
+        bool desactivated = false;
+        Vector2Int index = Vector2Int.zero;
+        while (!desactivated) {
+            index.x = Random.Range(0, startingTileValues.Length);
+            index.y = Random.Range(0, startingTileValues[0].Length);
+            LogicTile tile = tileValues[index.x, index.y];
+            if((tile.id == id1 || tile.id == id2) && tile.isActive && tile.CanRecolect()) {
+                tile.isActive = false;
+                tile.inactiveTurnsLeft = inactiveTurns;
+                inactivePoints.Add(tile);
+                return;
+            }
+        }
+    }
+
+    void DealDamageSameType(int id1, int damage) {
+        foreach(LogicTile tile in tileValues) {
+            if(tile.id == id1) {
+                if (tile.DealDamage(damage)) {
+                    tile.DeleteAction(1);
+                    tile.AddAction(8);
+                }
+            }
+        }
     }
 
     /// <summary> Destroys something and replaces it with floor </summary>
