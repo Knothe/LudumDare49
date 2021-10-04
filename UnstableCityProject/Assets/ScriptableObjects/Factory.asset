@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Factory
   m_EditorClassIdentifier: 
   tiles:
-  - {fileID: 11400000, guid: 49048cffc3690974b9abe32664bd4105, type: 2}
+  - {fileID: 11400000, guid: 927e473684c4a1f44a78198817432ac6, type: 2}
   id: 5
   hp: 15
-  contamination: 0
+  contamination: 3
   recolect: 1
   build: 0
   destroy: 1

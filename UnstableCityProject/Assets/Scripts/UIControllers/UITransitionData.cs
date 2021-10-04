@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class UITransitionData : MonoBehaviour
 {
-
     public CanvasID canvasObjective;
     public float transitionTime;
     public float camNextSize;

@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Forest
   m_EditorClassIdentifier: 
   tiles:
-  - {fileID: 11400000, guid: 6024f22a2631ec246a0dc1ccbb64f543, type: 2}
+  - {fileID: 11400000, guid: 9615cfea055e8e44ab9bb9e5b7e332aa, type: 2}
   id: 1
   hp: 3
-  contamination: 5
+  contamination: 2
   recolect: 1
   build: 0
   destroy: 0

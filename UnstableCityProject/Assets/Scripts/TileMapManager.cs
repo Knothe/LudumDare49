@@ -76,8 +76,8 @@ public class TileMapManager : MonoBehaviour {
                 map.SetTile(ArrayToGrid(value), startingTileValues[value.x][value.y].GetRandomTile());
             }
         }
-
     }
+
     bool FindInferiorLimit(out Vector3Int inferiorLimit, out Vector3Int superiorLimit) {
         BoundsInt b = map.cellBounds;
         inferiorLimit = b.min;
@@ -190,13 +190,15 @@ public class TileMapManager : MonoBehaviour {
         map.SetTile(selectedPointGrid, data.GetRandomTile());
         UpdateArrayTile(selectedPointArray, data);
     }
-
-    public int CollectFromSelected(out int contamination) {
+    
+    // Ahorita los naturales están dando 2 y los humanos 1
+    public int CollectFromSelected(out int contamination, out int quantity) {
         LogicTile selected = tileValues[selectedPointArray.x, selectedPointArray.y];
         contamination = 0;
         int material = (selected.id - 1) % 3;
         if (selected.id >= 4) {
             // Colecting from human made stuff
+            quantity = 1;
             if (selected.DealDamage(1)) {
                 selected.DeleteAction(1);
                 selected.AddAction(8);
@@ -204,6 +206,7 @@ public class TileMapManager : MonoBehaviour {
         }
         else {
             // Colecting from nature
+            quantity = 2;
             if (selected.DealDamage(1)) {
                 contamination = selected.contaminationByDead;
                 DestroyAt(selectedPointGrid);

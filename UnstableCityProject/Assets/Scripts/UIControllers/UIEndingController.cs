@@ -2,21 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIEndingController : MonoBehaviour
 {
     [SerializeField]
-    GameObject win, lose;
+    GameObject winText, loseText;
 
     [SerializeField]
-    Image panel;
+    TMP_Text stabilityText;
 
     [SerializeField]
-    Color losePanel, winPanel;
+    Image stabilityFill;
 
-    public void SetEndingState(bool b) {
-        panel.color = (b) ? winPanel : losePanel;
-        win.SetActive(b);
-        lose.SetActive(!b);
+    public void SetEndingState(int stability) {
+        bool b = stability <= 0;
+        winText.SetActive(!b);
+        loseText.SetActive(b);
+        stabilityText.text = stability.ToString();
+        stabilityFill.fillAmount = stability / 100f;
     }
 }

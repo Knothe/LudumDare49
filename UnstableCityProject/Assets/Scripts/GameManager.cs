@@ -24,6 +24,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     ConstructionCost homeCost, factoryCost, foodCost, repairCost;
 
+    [SerializeField]
+    TributeValueChange tributeValueChange;
+
     int actionCount, currentTurn;
     bool actionMenu = false;
     int turnsToCatastrophe = -1;
@@ -32,6 +35,7 @@ public class GameManager : MonoBehaviour
     int constantContamination;
     int contamination { get; set; }
     int stability = 100;
+    bool endingGame;
 
     // Estabilidad -> float
     // Afectada por: Desastre Natural (-) ocurre, Contaminación (-) ft, Tributo (+-) ocurre
@@ -42,7 +46,10 @@ public class GameManager : MonoBehaviour
     // La catástrofe ocurrirá en un # de turnos
 
     private void Awake() {
-        uiGameManager.SetBuildText(homeCost.Text, factoryCost.Text, foodCost.Text);
+        uiGameManager.SetBuildText(
+            homeCost.wood, homeCost.water, homeCost.ore,
+            factoryCost.wood, factoryCost.water, factoryCost.ore,
+            foodCost.wood, foodCost.water, foodCost.ore);
         UpdateAllUI();
         constantContamination = 0;
     }
@@ -64,6 +71,7 @@ public class GameManager : MonoBehaviour
         uiGameManager.Initialize();
         stability = 100;
         UpdateAllUI();
+        endingGame = false;
     }
 
     public void ShowMenu(int i) {
@@ -78,7 +86,7 @@ public class GameManager : MonoBehaviour
                 break;
             case 1: uiGameManager.DestroyMenu();
                 break;
-            case 2: uiGameManager.RepairMenu(repairCost.CanBuild(wood, ore, water), repairCost.Text);
+            case 2: uiGameManager.RepairMenu(repairCost.CanBuild(wood, ore, water), repairCost.wood, repairCost.water, repairCost.ore);
                 break;
         }
     }
@@ -102,14 +110,14 @@ public class GameManager : MonoBehaviour
     }
 
     public void Collect() {
-        int matCollected = tileMap.CollectFromSelected(out int contamination);
+        int matCollected = tileMap.CollectFromSelected(out int contamination, out int quantity);
         constantContamination += contamination;
         if (matCollected == 0)
-            wood++;
+            wood += quantity;
         else if (matCollected == 1)
-            ore++;
+            ore += quantity;
         else if (matCollected == 2)
-            water++;
+            water += quantity;
         UpdateAllUI();
         tileMap.ClearTileSelection();
         ActionRealized();
@@ -158,9 +166,13 @@ public class GameManager : MonoBehaviour
         wood -= giveWood;
         water -= giveWater;
         ore -= giveOre;
+        if (endingGame) {
+            EndGame();
+            return;
+        }
         int catastrophe = CatastropheActions();
         tileMap.GridTurnCheck(ref wood, ref ore, ref water);
-        uiGameManager.TurnChangeUI(catastrophe, stability);
+        uiGameManager.TurnChangeUI(catastrophe, currentTurn, stability);
         UpdateAllUI();
     }
 
@@ -184,11 +196,10 @@ public class GameManager : MonoBehaviour
         actionCount = 1;
         currentTurn++;
         contamination = constantContamination + tileMap.CountContamination();
-        if (currentTurn > totalTurns) {
-            EndGame();
-            return;
-        }
-        uiGameManager.ShowTributeMenu(3, 3, 3, wood, water, ore, stability);
+        Debug.Log(contamination);
+        if (currentTurn > totalTurns) 
+            endingGame = true;
+        uiGameManager.ShowTributeMenu(tributeValueChange.GetTributes(currentTurn), wood, water, ore, stability);
         UpdateAllUI();
     }
 
@@ -211,14 +222,13 @@ public class GameManager : MonoBehaviour
         return 0;
     }
 
-    // Change with formula to calculate Catastrophe probability
     bool CatastropheHappens() => UnityEngine.Random.Range(0, 101) <= contamination;
 
     int ChooseCatastrophe() => UnityEngine.Random.Range(1, 4);
 
     void EndGame() {
-        uIStateManager.StartUITransition(CanvasID.ENDING, 2, 10);
-        endingUI.SetEndingState(stability > 0);
+        uIStateManager.StartUITransition(CanvasID.ENDING, 2, 3.5f);
+        endingUI.SetEndingState(stability);
     }
 }
 
@@ -234,9 +244,20 @@ public class ConstructionCost {
             water >= this.water;
     }
 
-    public string Text =>
-        "Wood: " + wood + "\n" +
-        "Ore: " + ore + "\n" +
-        "Water: " + water;
-        
+}
+
+[Serializable]
+public class TributeValueChange{
+    [SerializeField]
+    List<int> changeTributeTurn;
+
+    int value = 1;
+    int currentTribute = 0;
+
+    public int GetTributes(int currentTurn) {
+        int nextChange = (changeTributeTurn.Count <= currentTribute) ? -1 : changeTributeTurn[currentTribute];
+        if (nextChange == currentTurn)
+            value++;
+        return value;
+    }
 }

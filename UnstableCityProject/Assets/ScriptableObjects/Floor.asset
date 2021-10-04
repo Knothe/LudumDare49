@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Floor
   m_EditorClassIdentifier: 
   tiles:
-  - {fileID: 11400000, guid: 3f2eadaa1d131524380641baa1ae05b1, type: 2}
+  - {fileID: 11400000, guid: 993ebffb0d6cc29499c22b998f8f3b72, type: 2}
   id: 0
   hp: -1
   contamination: 0

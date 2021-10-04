@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Mine
   m_EditorClassIdentifier: 
   tiles:
-  - {fileID: 11400000, guid: fddc07520a0d06b46ba3a5e0dfb91202, type: 2}
+  - {fileID: 11400000, guid: 91d1dd7f836891f499f91d9a8d185ddd, type: 2}
   id: 2
   hp: 3
-  contamination: 6
+  contamination: 2
   recolect: 1
   build: 0
   destroy: 0

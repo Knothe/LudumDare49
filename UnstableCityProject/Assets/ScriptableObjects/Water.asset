@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Water
   m_EditorClassIdentifier: 
   tiles:
-  - {fileID: 11400000, guid: 11e3bf5c15388c146a5b3ab23e5acf29, type: 2}
+  - {fileID: 11400000, guid: f2d1bb957bc4de24395c95393d0f5778, type: 2}
   id: 3
   hp: 3
-  contamination: 7
+  contamination: 2
   recolect: 1
   build: 0
   destroy: 0

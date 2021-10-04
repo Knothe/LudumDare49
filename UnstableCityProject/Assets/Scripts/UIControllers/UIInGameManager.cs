@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 public class UIInGameManager : MonoBehaviour
 {
@@ -10,13 +11,17 @@ public class UIInGameManager : MonoBehaviour
     GameObject buildMenu, destroyMenu, repairMenu, catastropheIcon;
 
     [SerializeField]
-    Text turn, action, wood, water, ore, stability;
+    TMP_Text turn, wood, water, ore, stability;
 
     [SerializeField]
-    Button homeButton, factoryButton, foodButton, repairButton;
+    List<Image> actionFill;
 
     [SerializeField]
-    Text homeCost, factoryCost, foodCost, repairCost;
+    Image stabilityFill;
+
+    [SerializeField]
+    //TMP_Text homeCost, factoryCost, foodCost, repairCost;
+    BuildCostUIData residentialCost, factoryCost, greenHouseCost, repairCost;
 
     [SerializeField]
     SumaryMenuData sumaryMenuData;
@@ -39,16 +44,16 @@ public class UIInGameManager : MonoBehaviour
         repairMenu.SetActive(false);
     }
 
-    public void SetBuildText(string home, string factory, string food) {
-        homeCost.text = home;
-        factoryCost.text = factory;
-        foodCost.text = food;
+    public void SetBuildText(int rWood, int rWater, int rOre, int fWood, int fWater, int fOre, int gWood, int gWater, int gOre) {
+        residentialCost.SetValues(rWood, rWater, rOre);
+        factoryCost.SetValues(fWood, fWater, fOre);
+        greenHouseCost.SetValues(gWood, gWater, gOre);
     }
 
     public void BuildMenu(bool home, bool factory, bool food) {
-        homeButton.interactable = home;
-        factoryButton.interactable = factory;
-        foodButton.interactable = food;
+        residentialCost.interactable = home;
+        factoryCost.interactable = factory;
+        greenHouseCost.interactable = food;
         buildMenu.SetActive(true);
     }
 
@@ -60,9 +65,9 @@ public class UIInGameManager : MonoBehaviour
         destroyMenu.SetActive(true);
     }
 
-    public void RepairMenu(bool canRepair, string cost) {
-        repairCost.text = cost;
-        repairButton.interactable = canRepair;
+    public void RepairMenu(bool canRepair, int wood, int water, int ore) {
+        repairCost.SetValues(wood, water, ore);
+        repairCost.interactable = canRepair;
         repairMenu.SetActive(true);
     }
 
@@ -75,8 +80,8 @@ public class UIInGameManager : MonoBehaviour
         StabilityNumber(stability);
     }
 
-    public void TurnChangeUI(int i, int stability) =>
-        sumaryMenuData.ShowMenu(i, stability);
+    public void TurnChangeUI(int i, int week, int stability) =>
+        sumaryMenuData.ShowMenu(i, week, stability);
 
     public void DesactivateTurnChangeUI() =>
         sumaryMenuData.HideMenu();
@@ -86,7 +91,13 @@ public class UIInGameManager : MonoBehaviour
     }
 
     void ActionNumber(int action, int max) {
-        this.action.text = action.ToString() + "/" + max.ToString();
+        action--;
+        bool state = false;
+        for(int i = 0; i < actionFill.Count; i++) {
+            if (i == action)
+                state = true;
+            actionFill[i].gameObject.SetActive(state);
+        }
     }
 
     void WoodNumber(int value) {
@@ -101,10 +112,13 @@ public class UIInGameManager : MonoBehaviour
         ore.text = value.ToString();
     }
 
-    void StabilityNumber(int value) => stability.text = value.ToString() + "%";
+    void StabilityNumber(int value) {
+        stability.text = value.ToString() + "%";
+        stabilityFill.fillAmount = value / 100f;
+    }
 
-    public void ShowTributeMenu(int nWood, int nWater, int nOre, int hWood, int hWater, int hOre, int stability) =>
-        tributeMenuData.ShowMenu(nWood, nWater, nOre, hWood, hWater, hOre, stability);
+    public void ShowTributeMenu(int need, int hWood, int hWater, int hOre, int stability) =>
+        tributeMenuData.ShowMenu(need, need, need, hWood, hWater, hOre, stability);
     
     public int GetTributeData(out int giveWood, out int giveWater, out int giveOre) =>
         tributeMenuData.ApplyTribute(out giveWood, out giveWater, out giveOre);
@@ -125,15 +139,20 @@ public class SumaryMenuData {
     GameObject sumaryMenu, hurricaneText, earthquakeText, floodText, noCatastropheText;
 
     [SerializeField]
-    Text stabilityText;
+    TMP_Text weekText, stabilityText;
+
+    [SerializeField]
+    Image stabilityFill;
 
     public void Initialize() {
         HideMenu();
     }
 
-    public void ShowMenu(int i, int stability) {
+    public void ShowMenu(int i, int week, int stability) {
         sumaryMenu.SetActive(true);
-        stabilityText.text = stability.ToString();
+        weekText.text = "Week " + week.ToString();
+        stabilityText.text = stability.ToString() + "%";
+        stabilityFill.fillAmount = stability/100f;
         if (i == 0)
             noCatastropheText.SetActive(true);
         else if(i == 1) // Affects Wood
@@ -169,7 +188,10 @@ public class TributeMenuData {
     GameObject tributeMenu;
 
     [SerializeField]
-    Text stabilityText;
+    TMP_Text stabilityText;
+
+    [SerializeField]
+    Image stabilityFill;
 
     [SerializeField]
     TributeUI woodUI, waterUI, oreUI;
@@ -207,7 +229,7 @@ public class TributeMenuData {
     public void ModifyTribute(int id, int value) {
         if (id == 0)
             ModifyWood(value);
-        else if (id == 1)
+        else if (id == 2)
             ModifyOre(value);
         else
             ModifyWater(value);
@@ -219,6 +241,7 @@ public class TributeMenuData {
             StabilityMod(needWater, giveWater) + StabilityMod(needOre, giveOre);
         futureStability = current + mod;
         stabilityText.text = futureStability.ToString();
+        stabilityFill.fillAmount = futureStability / 100f;
     }
 
     int StabilityMod(int asked, int given) =>
@@ -247,10 +270,28 @@ public class TributeMenuData {
 
     [Serializable]
     class TributeUI {
-        public Text needValue;
-        public Text giveValue;
+        public TMP_Text needValue;
+        public TMP_Text giveValue;
         public Button plus;
         public Button minus;
     }
 }
 
+[Serializable]
+public class BuildCostUIData {
+    [SerializeField]
+    TMP_Text wood, water, ore;
+
+    [SerializeField]
+    Button button;
+
+    public bool interactable {
+        set { button.interactable = value; }
+    }
+    
+    public void SetValues(int wood, int water, int ore) {
+        this.wood.text = wood.ToString();
+        this.water.text = water.ToString();
+        this.ore.text = ore.ToString();
+    }
+}
