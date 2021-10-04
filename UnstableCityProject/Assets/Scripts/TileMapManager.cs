@@ -126,10 +126,11 @@ public class TileMapManager : MonoBehaviour {
         inferiorLimit -= movement;
     }
 
-    public void OnClick(int i, Vector2 mousePos) {
-        if (i == 0) {
-            ActivateTileMenu(mousePos);
-        }
+    public bool OnClick(int i, Vector2 mousePos) {
+        if (i == 0) 
+            return ActivateTileMenu(mousePos);
+        
+        return false;
     }
 
     public void DesactivateTileMenu() {
@@ -142,21 +143,22 @@ public class TileMapManager : MonoBehaviour {
         selectedPointGrid = Vector3Int.one * -1;
     }
 
-    void ActivateTileMenu(Vector2 mousePos) {
+    bool ActivateTileMenu(Vector2 mousePos) {
         if (!CheckClickedTile(mousePos, out Vector3Int gridPosition) || gridPosition == selectedPointGrid) {
             ClearTileSelection();
-            return;
+            return false;
         }
         SetTileColour(Color.white, selectedPointGrid);
         selectedPointGrid = gridPosition;
         selectedPointArray = GridToArray(gridPosition);
         if(!tileValues[selectedPointArray.x, selectedPointArray.y].isActive) {
             ClearTileSelection();
-            return;
+            return false;
         }
         actionUI.ShowMenu(tileValues[selectedPointArray.x, selectedPointArray.y].actionValue, Input.mousePosition, 
             tileValues[selectedPointArray.x, selectedPointArray.y].healthPercentage);
         SetTileColour(selectColor, selectedPointGrid);
+        return true;
     }
 
     bool CheckClickedTile(Vector2 mousePosition, out Vector3Int gridPosition) {
@@ -216,16 +218,20 @@ public class TileMapManager : MonoBehaviour {
     }
 
     public void GridTurnCheck(ref int wood, ref int ore, ref int water) {
-        wood = ore = water = 0;
         foreach(LogicTile tile in tileValues) {
-            if(tile.id >= 4 && tile.isActive && tile.CanRecolect()) {
-                if (tile.DealDamage(1)) { 
-                    tile.DeleteAction(1);
-                    tile.AddAction(8);
+            if(tile.id >= 4) {
+                if (tile.isActive && tile.CanRecolect()) {
+                    if (tile.DealDamage(1)) {
+                        tile.DeleteAction(1);
+                        tile.AddAction(8);
+                    }
+                    if (tile.id == 4) { wood++; }
+                    if (tile.id == 5) { ore++; }
+                    if (tile.id == 6) { water++; }
                 }
-                if (tile.id == 4) { wood++; }
-                if(tile.id == 5) { ore++; }
-                if(tile.id == 6) { water++; }
+            } 
+            else if(tile.id >= 1) {
+                tile.RecoverHealth();
             }
         }
         for(int i = inactivePoints.Count - 1; i >= 0; i--) {

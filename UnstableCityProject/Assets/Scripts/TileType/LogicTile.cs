@@ -12,9 +12,12 @@ public class LogicTile
     public float healthPercentage => health / maxHealth;
     public bool isActive { get; set; }
     public int inactiveTurnsLeft;
+    int totalTurnsToRecover { get; }
+    int recoverCount;
 
     public LogicTile(TileData data) {
         SetNewValues(data);
+        totalTurnsToRecover = 4;
     }
 
     public void SetNewValues(TileData data) {
@@ -24,6 +27,7 @@ public class LogicTile
         actionValue = data.actionValue;
         isActive = true;
         inactiveTurnsLeft = 0;
+        recoverCount = 0;
         if (data.id >= 4)
             SetValues((HumanTile)data);
         else if (data.id >= 1)
@@ -33,6 +37,16 @@ public class LogicTile
     }
 
     public void RegainHealth() => health = maxHealth;
+
+    public void RecoverHealth() {
+        if (health == maxHealth)
+            return;
+        recoverCount++;
+        if(recoverCount == totalTurnsToRecover) {
+            health++;
+            recoverCount = 0;
+        }
+    }
 
     void SetValues(HumanTile tile) {
         contaminationByExisting = tile.ContaminationByExisting();

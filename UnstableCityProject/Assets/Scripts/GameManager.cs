@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviour
     UIInGameManager uiGameManager;
 
     [SerializeField]
+    AudioManager audioManager;
+    
+    [SerializeField]
     UIEndingController endingUI;
 
     [SerializeField]
@@ -112,12 +115,18 @@ public class GameManager : MonoBehaviour
     public void Collect() {
         int matCollected = tileMap.CollectFromSelected(out int contamination, out int quantity);
         constantContamination += contamination;
-        if (matCollected == 0)
+        if (matCollected == 0) {
             wood += quantity;
-        else if (matCollected == 1)
+            audioManager.PlaySFX(AudioSFXClip.WOOD_CUT);
+        }
+        else if (matCollected == 1) {
             ore += quantity;
-        else if (matCollected == 2)
+            audioManager.PlaySFX(AudioSFXClip.PICKAXE);
+        }
+        else if (matCollected == 2) {
             water += quantity;
+            audioManager.PlaySFX(AudioSFXClip.WATER_DROP);
+        }
         UpdateAllUI();
         tileMap.ClearTileSelection();
         ActionRealized();
@@ -152,7 +161,8 @@ public class GameManager : MonoBehaviour
             actionMenu = false;
         }
         else {
-            tileMap.OnClick(i, mousePos);
+            if (tileMap.OnClick(i, mousePos))
+                audioManager.PlaySFX(AudioSFXClip.POP);
         }
     }
 
@@ -163,13 +173,13 @@ public class GameManager : MonoBehaviour
 
     public void ApplyTribute() {
         stability = uiGameManager.GetTributeData(out int giveWood, out int giveWater, out int giveOre);
-        wood -= giveWood;
-        water -= giveWater;
-        ore -= giveOre;
-        if (endingGame) {
+        if (endingGame || stability <= 0) {
             EndGame();
             return;
         }
+        wood -= giveWood;
+        water -= giveWater;
+        ore -= giveOre;
         int catastrophe = CatastropheActions();
         tileMap.GridTurnCheck(ref wood, ref ore, ref water);
         uiGameManager.TurnChangeUI(catastrophe, currentTurn, stability);
@@ -227,6 +237,7 @@ public class GameManager : MonoBehaviour
     int ChooseCatastrophe() => UnityEngine.Random.Range(1, 4);
 
     void EndGame() {
+        uiGameManager.DesactivateMenus();
         uIStateManager.StartUITransition(CanvasID.ENDING, 2, 3.5f);
         endingUI.SetEndingState(stability);
     }
