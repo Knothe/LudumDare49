@@ -19,7 +19,7 @@ public class UIEndingController : MonoBehaviour
         bool b = stability <= 0;
         winText.SetActive(!b);
         loseText.SetActive(b);
-        stabilityText.text = stability.ToString();
+        stabilityText.text = Mathf.Clamp(stability, 0f, 100f).ToString();
         stabilityFill.fillAmount = stability / 100f;
     }
 }
