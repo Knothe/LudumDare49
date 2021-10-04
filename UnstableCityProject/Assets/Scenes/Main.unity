@@ -19451,17 +19451,17 @@ MonoBehaviour:
   maxTurnsCatastrophe: 3
   inactiveTurns: 3
   homeCost:
-    wood: 1
-    ore: 2
+    wood: 3
+    ore: 3
     water: 3
   factoryCost:
-    wood: 2
+    wood: 3
     ore: 3
-    water: 4
+    water: 3
   foodCost:
     wood: 3
-    ore: 4
-    water: 5
+    ore: 3
+    water: 3
   repairCost:
     wood: 2
     ore: 2
