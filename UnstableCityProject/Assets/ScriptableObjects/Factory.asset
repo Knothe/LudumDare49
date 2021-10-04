@@ -16,7 +16,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 49048cffc3690974b9abe32664bd4105, type: 2}
   id: 5
   hp: 15
-  contamination: 8
+  contamination: 0
   recolect: 1
   build: 0
   destroy: 1
